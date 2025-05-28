@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản Lý Nợ Nâng Cao</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    h2 {
+      text-align: center;
+    }
+    input, button {
+      padding: 8px;
+      margin: 5px 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .btn {
+      padding: 5px 8px;
+      margin-left: 5px;
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+    }
+    .delete-btn {
+      background: red;
+      color: #fff;
+    }
+    .edit-btn {
+      background: orange;
+      color: #fff;
+    }
+    .save-btn {
+      background: green;
+      color: #fff;
+    }
+    .total {
+      margin-top: 10px;
+      font-weight: bold;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>📋 Danh Sách Nợ</h2>
+
+  <input type="text" id="name" placeholder="Nhập tên người nợ">
+  <input type="number" id="amount" placeholder="Nhập số tiền (VND)">
+  <button onclick="addDebt()">Thêm Nợ</button>
+
+  <ul id="debtList"></ul>
+
+  <div class="total" id="totalDebt">Tổng nợ: 0 VND</div>
+
+  <script>
+    let debts = JSON.parse(localStorage.getItem('debts')) || [];
+
+    function saveDebts() {
+      localStorage.setItem('debts', JSON.stringify(debts));
+    }
+
+    function renderDebts() {
+      const list = document.getElementById('debtList');
+      const totalDiv = document.getElementById('totalDebt');
+      list.innerHTML = '';
+      let total = 0;
+
+      debts.forEach((debt, index) => {
+        total += debt.amount;
+
+        const li = document.createElement('li');
+
+        // Nếu đang chỉnh sửa
+        if (debt.editing) {
+          li.innerHTML = `
+            <input type="text" id="editName${index}" value="${debt.name}">
+            <input type="number" id="editAmount${index}" value="${debt.amount}">
+            <button class="btn save-btn" onclick="saveEdit(${index})">Lưu</button>
+          `;
+        } else {
+          li.innerHTML = `
+            <span>${debt.name} - ${debt.amount.toLocaleString()} VND</span>
+            <div>
+              <button class="btn edit-btn" onclick="editDebt(${index})">Sửa</button>
+              <button class="btn delete-btn" onclick="deleteDebt(${index})">Xóa</button>
+            </div>
+          `;
+        }
+
+        list.appendChild(li);
+      });
+
+      totalDiv.textContent = `Tổng nợ: ${total.toLocaleString()} VND`;
+    }
+
+    function addDebt() {
+      const name = document.getElementById('name').value.trim();
+      const amount = parseFloat(document.getElementById('amount').value);
+      if (!name || isNaN(amount)) {
+        alert('Vui lòng nhập đủ tên và số tiền hợp lệ!');
+        return;
+      }
+      debts.push({ name, amount });
+      saveDebts();
+      renderDebts();
+      document.getElementById('name').value = '';
+      document.getElementById('amount').value = '';
+    }
+
+    function deleteDebt(index) {
+      if (confirm('Bạn có chắc muốn xóa khoản nợ này?')) {
+        debts.splice(index, 1);
+        saveDebts();
+        renderDebts();
+      }
+    }
+
+    function editDebt(index) {
+      debts[index].editing = true;
+      renderDebts();
+    }
+
+    function saveEdit(index) {
+      const newName = document.getElementById(`editName${index}`).value.trim();
+      const newAmount = parseFloat(document.getElementById(`editAmount${index}`).value);
+      if (!newName || isNaN(newAmount)) {
+        alert('Vui lòng nhập đúng!');
+        return;
+      }
+      debts[index].name = newName;
+      debts[index].amount = newAmount;
+      debts[index].editing = false;
+      saveDebts();
+      renderDebts();
+    }
+
+    renderDebts();
+  </script>
+
+</body>
+</html>
