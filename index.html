@@ -87,7 +87,6 @@
 
         const li = document.createElement('li');
 
-        // Nếu đang chỉnh sửa
         if (debt.editing) {
           li.innerHTML = `
             <input type="text" id="editName${index}" value="${debt.name}">
@@ -152,6 +151,13 @@
     }
 
     renderDebts();
+
+    // Đăng ký Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('✅ Service Worker đã đăng ký!'))
+        .catch(error => console.error('❌ Lỗi Service Worker:', error));
+    }
   </script>
 
 </body>
