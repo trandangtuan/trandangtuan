@@ -1,19 +1,19 @@
 {
   "name": "Debt Manager",
   "short_name": "DebtMgr",
-  "start_url": "/",
+  "start_url": "/trandangtuan",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4CAF50",
   "description": "Ứng dụng quản lý công nợ tiện lợi.",
   "icons": [
     {
-      "src": "/icons/icon-192x192.png",
+      "src": "/trandangtuan/icons/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/icons/icon-512x512.png",
+      "src": "/trandangtuan/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
